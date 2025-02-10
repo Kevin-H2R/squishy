@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Squishy
 
-## Getting Started
+A simple image compression app made for the Picky interview.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Clone this repository and `cd` into it
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build it: `docker build -t squishy .`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run it: `docker run -p 3000:3000 squishy`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Go to `localhost:3000` and start using the app
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+You have a button in the main section to upload an image.
+Once uploaded you can select it in your galery on the right and then click the compress button.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Feedback
+I was not sure if the deadline was today the 10th or tomorrow Tuesday as the assignment deadline section indicated Tues 10th of February. I took the decision to submit it on the earlier end.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+I wanted to go a bit further but I lacked of time due to my weekend being busier than what I had expected, I do not want to use this as an excuse, but it is what it is.
 
-## Deploy on Vercel
+The assignment itself was pretty fun and interesting on many points, it was not too complicated as I already handled file uploads in my professional experience.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+I wanted to handle error better, I also prepared everything on the backend to be able to let the user chose how to resize the image, and the general quality of the image also, but I ran out of time for the front end implementation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+After reading the assignement I immediately thought about Squoosh (https://squoosh.app/), and if I had more time I definitely would have gone for a front end in that flavor (the middle bar that you can move from left to right, showing the difference in quality is super cool!).
+
+## AI usage
+Running out of time, I used AI to generate some front end code, that I of course read back and modified to fit my needs.
+
+
