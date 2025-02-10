@@ -4,6 +4,7 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 import { PrismaClient } from '@prisma/client';
+import fs from "fs"
 
 export const config = {
   api: {
@@ -13,6 +14,10 @@ export const config = {
 
 const ogStorage = multer.diskStorage({
   destination: (_, file, cb) => {
+    const uploadPath = "public/uploads"
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath)
+    }
     cb(null, "public/uploads");
   },
   filename: (_, file, cb) => {
@@ -30,6 +35,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   await new Promise((resolve, reject) => {
     ogUpload.single("file")(req as any, res as any, async (err) => {
       const request = req as any
+      console.log(request.file)
       if (err) {
         res.status(500).json({message: "Error with the file upload"})
         return reject(err)
@@ -42,7 +48,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       await prisma.image.create({
         data: {
           filename: request.file.originalname,
-          path: request.file.path,
+          path: request.file.path.replace('public/', ''),
           width: metadata.width ?? -1,
           height: metadata.height ?? -1,
           size: request.file.size
@@ -60,7 +66,7 @@ const GET = async (_: NextApiRequest, res: NextApiResponse) => {
       compressedImages: true
     }
   })
-  res.status(200).json({message: JSON.stringify(images)})
+  res.status(200).json({images})
   console.log(images)
 }
 

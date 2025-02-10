@@ -34,9 +34,9 @@ export default async function handler(
     }
     const compressedFileName = uuidv4() + path.extname(image.filename)
     const compressedPath = compressedDir + "/" + uuidv4() + path.extname(image.filename)
-    const metadata = await sharp(image.path).metadata()
+    const metadata = await sharp('public/' + image.path).metadata()
 
-    await sharp(image.path)
+    await sharp('public/' + image.path)
       .resize({
         width: Math.round(metadata.width! * (data.width ?? 0.7)),
         height: Math.round(metadata.height! * (data.height ?? 0.7)),
@@ -56,6 +56,6 @@ export default async function handler(
       }
     })
 
-    res.status(200).json({path: compressedPath})
+    res.status(200).json({path: compressedPath.replace('public/', '')})
   })
 }
