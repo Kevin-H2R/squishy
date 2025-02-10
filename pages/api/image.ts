@@ -5,10 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 import { PrismaClient } from '@prisma/client';
 
-type ResponseData = {
-  message: string
-}
-
 export const config = {
   api: {
     bodyParser: false,
@@ -16,20 +12,10 @@ export const config = {
 };
 
 const ogStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_, file, cb) => {
     cb(null, "public/uploads");
   },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const uniqueName = uuidv4() + ext;
-    cb(null, uniqueName);
-  },
-});
-const compressedStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/uploads/compressed");
-  },
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     const ext = path.extname(file.originalname);
     const uniqueName = uuidv4() + ext;
     cb(null, uniqueName);
@@ -37,11 +23,10 @@ const compressedStorage = multer.diskStorage({
 });
 
 const ogUpload = multer({ storage: ogStorage });
-const compressedUpload = multer({storage: compressedStorage})
 
 const prisma = new PrismaClient()
 
-const POST = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
+const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   await new Promise((resolve, reject) => {
     ogUpload.single("file")(req as any, res as any, async (err) => {
       const request = req as any
@@ -63,15 +48,18 @@ const POST = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => 
           size: request.file.size
         }
       })
-      res.status(200).json({message: "Success"})
-
+      res.status(200).json({status: "Success"})
       resolve(null)
     })
   });
 }
 
-const GET = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
-  const images = await prisma.image.findMany()
+const GET = async (_: NextApiRequest, res: NextApiResponse) => {
+  const images = await prisma.image.findMany({
+    include: {
+      compressedImages: true
+    }
+  })
   res.status(200).json({message: JSON.stringify(images)})
   console.log(images)
 }
@@ -79,13 +67,16 @@ const GET = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse
 ) {
   if (req.method === 'GET') {
     await GET(req, res)
     return
   }
 
-  if (req.method !== "POST") return res.status(405).end();
+  if (req.method !== "POST") {
+    res.status(405).end();
+    return
+  }
   await POST(req, res)
 }
